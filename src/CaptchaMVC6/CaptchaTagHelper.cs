@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
+using Microsoft.AspNet.Mvc.ViewFeatures;
+using Microsoft.AspNet.Mvc.Rendering;
 
 namespace CaptchaMVC6
 {
-    [TargetElement("img", Attributes = "asp-captcha")]
+    [HtmlTargetElement("img", Attributes = "asp-captcha")]
     public class CaptchaTagHelper : TagHelper
     {
         [HtmlAttributeName("asp-captcha")]

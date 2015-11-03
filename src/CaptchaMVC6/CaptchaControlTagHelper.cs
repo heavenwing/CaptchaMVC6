@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNet.Mvc;
+using Microsoft.AspNet.Mvc.Rendering;
+using Microsoft.AspNet.Mvc.ViewFeatures;
 using Microsoft.AspNet.Razor.Runtime.TagHelpers;
 using System;
 using System.Collections.Generic;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CaptchaMVC6
 {
-    [TargetElement("div", Attributes = "asp-captcha-control")]
+    [HtmlTargetElement("div", Attributes = "asp-captcha-control")]
     public class CaptchaControlTagHelper : TagHelper
     {
         [HtmlAttributeName("asp-captcha-control")]

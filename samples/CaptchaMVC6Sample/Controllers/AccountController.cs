@@ -71,8 +71,8 @@ namespace CaptchaMVC6Sample.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    CaptchaMiddleware.EnableOption("login", Context.Session);
-                    Context.Session.Remove(SessionKeyPrefix_LoginTryTime + model.Email);
+                    CaptchaMiddleware.EnableOption("login", HttpContext.Session);
+                    HttpContext.Session.Remove(SessionKeyPrefix_LoginTryTime + model.Email);
 
                     return RedirectToLocal(returnUrl);
                 }
@@ -86,13 +86,13 @@ namespace CaptchaMVC6Sample.Controllers
                 }
                 else
                 {
-                    var userLoginTimes = Context.Session.GetInt32(SessionKeyPrefix_LoginTryTime + model.Email);
+                    var userLoginTimes = HttpContext.Session.GetInt32(SessionKeyPrefix_LoginTryTime + model.Email);
                     if (!userLoginTimes.HasValue)
                         userLoginTimes = 0;
                     userLoginTimes++;
-                    Context.Session.SetInt32(SessionKeyPrefix_LoginTryTime + model.Email, userLoginTimes.Value);
+                    HttpContext.Session.SetInt32(SessionKeyPrefix_LoginTryTime + model.Email, userLoginTimes.Value);
                     if (userLoginTimes.Value > 1) //after invalid login attemp two times, ask user to input captcha
-                        CaptchaMiddleware.DisableOption("login", Context.Session);
+                        CaptchaMiddleware.DisableOption("login", HttpContext.Session);
 
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return View(model);
@@ -461,7 +461,7 @@ namespace CaptchaMVC6Sample.Controllers
             if (!_databaseChecked)
             {
                 _databaseChecked = true;
-                context.Database.ApplyMigrations();
+                context.Database.EnsureCreated();
             }
         }
 
@@ -475,7 +475,7 @@ namespace CaptchaMVC6Sample.Controllers
 
         private async Task<ApplicationUser> GetCurrentUserAsync()
         {
-            return await _userManager.FindByIdAsync(Context.User.GetUserId());
+            return await _userManager.FindByIdAsync(User.GetUserId());
         }
 
         private IActionResult RedirectToLocal(string returnUrl)

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Http.Features;
+using Microsoft.Framework.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -40,9 +41,9 @@ namespace CaptchaMVC6
             var path = new PathString(Path);
             if (request.Path == path)
             {
-                var codeName = request.Query["name"] ?? "default";
+                var codeName = StringValues.IsNullOrEmpty(request.Query["name"]) ? "default" : request.Query["name"].ToString();
                 var length = request.Query["length"];
-                var codeLength = string.IsNullOrEmpty(length) ? 4 : int.Parse(length);
+                var codeLength = StringValues.IsNullOrEmpty(length) ? 4 : int.Parse(length);
                 string codeValue = _codeGenerator.Generate(codeLength);
                 context.Session.SetString(SessionKeyPrefix_Value + codeName.Trim(), codeValue);
                 var buffer = _graphicGenerator.Generate(codeValue);
